@@ -16,6 +16,6 @@ export default {
     typescript(),
     nodeResolve({browser: true}),
     commonjs(),
-    scss({ output: 'styles.css', sass: require('sass') })
+    scss({ fileName: 'styles.css', sass: require('sass') })
   ]
 };
