@@ -1,4 +1,4 @@
-# MLIR Syntax Highlight Obsidian Plugin
+# MLIR Syntax Highlight Obsidian Plugin ![Release](https://github.com/Lewuathe/obsidian-mlir-syntax-highlight/actions/workflows/release.yml/badge.svg)
 
 A plugin for [Obsidian](https://obsidian.md) which allows MLIR syntax highlighting for code blocks in the editor.
 
