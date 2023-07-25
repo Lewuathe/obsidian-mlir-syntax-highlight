@@ -8,14 +8,7 @@ export default class MLIRSyntaxHighlightPlugin extends Plugin {
   // these are the CodeMirror modes that Obsidian uses by default
   modesToKeep = ["hypermd", "markdown", "null", "xml"];
 
-  async onload() {
-    // wait for layout to be ready to perform the rest
-    this.app.workspace.layoutReady ? this.layoutReady() : this.app.workspace.on('layout-ready', this.layoutReady);
-  }
-
-  layoutReady = () => {
-    // don't need the event handler anymore, get rid of it
-    this.app.workspace.off('layout-ready', this.layoutReady);
+  onLayoutReady() {
     this.refreshLeaves();
   }
 
