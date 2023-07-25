@@ -1,6 +1,6 @@
 {
   "name": "obsidian-mlir-syntax-highlight",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Show syntax highlighing in code blocks the editor",
   "main": "main.js",
   "scripts": {
