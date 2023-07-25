@@ -162,6 +162,6 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/node,visualstudiocode
 
-styles.scss
+styles.css
 main.js
 assets
