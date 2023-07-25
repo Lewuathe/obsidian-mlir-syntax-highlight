@@ -15,27 +15,17 @@
   }
 
   var keywords = wordSet(["module", "func"])
-  var definingKeywords = wordSet(["var","let","class","enum","extension","import","protocol","struct","func","typealias","associatedtype","for"])
-  var atoms = wordSet(["true","false","nil","self","super","_"])
   var types = wordSet(["f32"])
   var buildin = wordSet(["call"])
   var rankedTypes = wordSet(["tensor", "memref"])
-  var operators = "+-/*%=|&<>~^?!"
   var punc = ":;,.(){}[]<>"
-  var binary = /^\-?0b[01][01_]*/
-  var octal = /^\-?0o[0-7][0-7_]*/
   var hexadecimal = /^\-?0x[\dA-Fa-f][\dA-Fa-f_]*(?:(?:\.[\dA-Fa-f][\dA-Fa-f_]*)?[Pp]\-?\d[\d_]*)?/
   var decimal = /^\-?\d[\d_]*(?:\.\d[\d_]*)?(?:[Ee]\-?\d[\d_]*)?/
   var float = /[-+]?[0-9]+[.][0-9]*([eE][-+]?[0-9]+)?/
-  var identifier = /^\$\d+|(`?)[_A-Za-z][_A-Za-z$0-9]*\1/
-  var property = /^\.(?:\$\d+|(`?)[_A-Za-z][_A-Za-z$0-9]*\1)/
-  var instruction = /^\#[A-Za-z]+/
-  var attribute = /^@(?:\$\d+|(`?)[_A-Za-z][_A-Za-z$0-9]*\1)/
 
 
   var bareIdentifier = /([a-zA-Z$._-]|[_])([a-zA-Z$._-]|[0-9]|[_$.])*/
   var suffixIdentifier = /([0-9]+|([a-zA-Z$._-][0-9a-zA-Z$._-]*))/
-  //var regexp = /^\/(?!\s)(?:\/\/)?(?:\\.|[^\/])+\//
 
   function tokenBase(stream, state, prev) {
     if (stream.sol()) state.indented = stream.indentation()
@@ -110,65 +100,6 @@
       stream.next()
       ch = stream.peek()
     }
-  }
-
-  function tokenUntilClosingParen() {
-    var depth = 0
-    return function(stream, state, prev) {
-      var inner = tokenBase(stream, state, prev)
-      if (inner == "punctuation") {
-        if (stream.current() == "(") ++depth
-        else if (stream.current() == ")") {
-          if (depth == 0) {
-            stream.backUp(1)
-            state.tokenize.pop()
-            return state.tokenize[state.tokenize.length - 1](stream, state)
-          }
-          else --depth
-        }
-      }
-      return inner
-    }
-  }
-
-  function tokenString(openQuote, stream, state) {
-    var singleLine = openQuote.length == 1
-    var ch, escaped = false
-    while (ch = stream.peek()) {
-      if (escaped) {
-        stream.next()
-        if (ch == "(") {
-          state.tokenize.push(tokenUntilClosingParen())
-          return "string"
-        }
-        escaped = false
-      } else if (stream.match(openQuote)) {
-        state.tokenize.pop()
-        return "string"
-      } else {
-        stream.next()
-        escaped = ch == "\\"
-      }
-    }
-    if (singleLine) {
-      state.tokenize.pop()
-    }
-    return "string"
-  }
-
-  function tokenComment(stream, state) {
-    var ch
-    while (true) {
-      stream.match(/^[^/*]+/, true)
-      ch = stream.next()
-      if (!ch) break
-      if (ch === "/" && stream.eat("*")) {
-        state.tokenize.push(tokenComment)
-      } else if (ch === "*" && stream.eat("/")) {
-        state.tokenize.pop()
-      }
-    }
-    return "comment"
   }
 
   function Context(prev, align, indented) {
